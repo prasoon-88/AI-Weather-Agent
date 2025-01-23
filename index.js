@@ -6,7 +6,6 @@ import TOOLS from "./tools/index.js";
 
 dotenv.config();
 
-// Readline setup for interactive input/output
 const rl = readLine.createInterface({
   input: process.stdin,
   output: process.stdout,
@@ -32,7 +31,6 @@ const talkToAI = async (msg) => {
   const response = await model.generateContent(prompt);
   const lines = response.response.text().trim().split("\n");
 
-  // Parse the AI's response from the last line
   return lines.at(-1) ? JSON.parse(lines.at(-1)) : {};
 };
 
@@ -40,10 +38,6 @@ const runAgent = async (msg) => {
   try {
     const data = await talkToAI(msg);
     const type = data?.type;
-
-    console.log("\n--- Agent Debug Info ---");
-    console.log("Received Data:", data);
-    console.log("-------------------------\n");
 
     switch (type) {
       case "plan":
@@ -65,9 +59,7 @@ const runAgent = async (msg) => {
         break;
 
       case "output":
-        console.log("\n>>> AI Response <<<");
         console.log(data?.output);
-        console.log(">>> End of Response <<<\n");
         break;
 
       default:
@@ -79,10 +71,9 @@ const runAgent = async (msg) => {
 };
 
 const main = async () => {
-  rl.question("Enter City Name to Get Weather: ", async (inputCity) => {
+  rl.question("Prompt: ", async (inputCity) => {
     try {
-      const cityName = capitalizeCityName(inputCity.trim());
-      const userPrompt = `What is the full weather info of ${cityName} currently?`;
+      const userPrompt = capitalizeCityName(inputCity.trim());
 
       const msg = {
         type: "user",
